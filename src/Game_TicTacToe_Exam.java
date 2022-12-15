@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import javax.swing.*;
 
@@ -12,7 +13,7 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
     JTextField inputSize, inputNeededToWin;
     JButton addBtn, removeBtn;
     JButton[][] field;
-    //List<JLabel> labels;
+    HashSet<Point> pointList;
 
     boolean[][] isPlayed;
     int size, neededNumberToWin;
@@ -31,13 +32,11 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
         this.hauptPanel = new JPanel();
         this.getContentPane().add(this.hauptPanel, BorderLayout.CENTER);
 
-        //this.labels = new ArrayList<>();
+        this.pointList = new HashSet<>();
 
         //System.out.println(size);
 
         this.setVisible(true);
-
-
     }
 
     private JPanel createObenPanel() {
@@ -105,7 +104,6 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
 
                 this.hauptPanel.setLayout(new GridLayout(this.size, this.size));
 
-
                 field = new JButton[this.size][this.size];
                 isPlayed = new boolean[this.size][this.size];
                 for (int i = 0; i < this.size; i++) {
@@ -123,12 +121,22 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
                                 int k = s.indexOf(" ");
                                 int i = Integer.parseInt(s.substring(0, k));
                                 int j = Integer.parseInt(s.substring(k + 1, s.length()));
-                                System.out.println(i + "," + j);
 
                                 if (isPlayed[i][j]) {
                                     setPlayer(i, j);
                                 }
+
                                 if (checkWin(i, j)) {
+                                    Iterator<Point> iter = pointList.iterator();
+                                    System.out.println(pointList.size());
+
+                                    while (iter.hasNext()) {
+
+                                        Point next = iter.next();
+                                        field[next.getRow()][next.getCol()].setOpaque(true);
+                                        field[next.getRow()][next.getCol()].setBackground(Color.PINK);
+                                    }
+
                                     JOptionPane pane = new JOptionPane();
                                     int dialogResult = JOptionPane.showConfirmDialog(
                                             pane,
@@ -191,6 +199,7 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
     }
 
     private int countToVictory(int row, int col, int i, int j) {
+        pointList = new HashSet<>();
         int victory = 1, nextRow, nextColumn;
 
         nextRow = row + i;
@@ -199,9 +208,13 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
                 && nextColumn >= 0 && nextColumn < field.length
                 && field[nextRow][nextColumn].getText() == field[row][col].getText()
         ) {
+            pointList.add(new Point(row, col));
+            pointList.add(new Point(nextRow, nextColumn));
+
             victory++;
             nextRow += i;
             nextColumn += j;
+
         }
 
         nextRow = row - i;
@@ -210,13 +223,14 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
                 && nextColumn >= 0 && nextColumn < field.length
                 && field[nextRow][nextColumn].getText() == field[row][col].getText()
         ) {
+            pointList.add(new Point(row, col));
+            pointList.add(new Point(nextRow, nextColumn));
             victory++;
             nextRow -= i;
             nextColumn -= j;
         }
 
         return victory;
-
     }
 
     private void setPlayer(int i, int j) {
