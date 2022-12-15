@@ -34,8 +34,6 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
 
         this.pointList = new HashSet<>();
 
-        //System.out.println(size);
-
         this.setVisible(true);
     }
 
@@ -72,8 +70,6 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
                 this.isNotField = false;
                 this.neededNumberToWin = Integer.parseInt(this.inputNeededToWin.getText());
                 this.size = Integer.parseInt(this.inputSize.getText());
-                //System.out.println(this.size);
-                //System.out.println( this.neededNumberToWin);
 
                 if(this.neededNumberToWin > this.size || this.neededNumberToWin < 3){
                     int dialogChange;
@@ -156,11 +152,12 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
                     }
                 }
             } else if(srcBtn == this.removeBtn) {
-                if(!this.isNotField){
+                 if(!this.isNotField){
                     new Game_TicTacToe_Exam();
                     dispose();
                     this.isNotField = true;
                 }
+
             }
             this.hauptPanel.revalidate();
             this.hauptPanel.repaint();
@@ -250,4 +247,4 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener, Focus
     {
             new Game_TicTacToe_Exam();
     }
-}       
+}
