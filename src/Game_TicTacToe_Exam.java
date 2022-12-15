@@ -1,17 +1,23 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.*;
 
-public class Game_TicTacToe_Exam extends JFrame implements ActionListener {
+public class Game_TicTacToe_Exam extends JFrame implements ActionListener, FocusListener {
     JPanel hauptPanel, obenPanel;
     JTextField inputSize, inputNeededToWin;
-    JButton addBtn;
+    JButton addBtn, removeBtn;
     JButton[][] field;
+    //List<JLabel> labels;
 
     boolean[][] isPlayed;
     int size, neededNumberToWin;
     int player = 0;
+    boolean isNotField;
 
     public Game_TicTacToe_Exam() {
         super("GAME TIC TAC TOE");
@@ -25,9 +31,13 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener {
         this.hauptPanel = new JPanel();
         this.getContentPane().add(this.hauptPanel, BorderLayout.CENTER);
 
+        //this.labels = new ArrayList<>();
+
         //System.out.println(size);
 
         this.setVisible(true);
+
+
     }
 
     private JPanel createObenPanel() {
@@ -35,14 +45,20 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener {
         panel.setBackground(Color.PINK);
 
         this.inputSize = new JTextField("Size",10);
+        this.inputSize.addFocusListener(this);
         this.inputNeededToWin = new JTextField("Needed Number To Win", 15);
+        this.inputNeededToWin.addFocusListener(this);
+
         this.addBtn = new JButton("add");
         this.addBtn.addActionListener(this);
+        this.removeBtn = new JButton("remove");
+        this.removeBtn.addActionListener(this);
+
 
         panel.add(this.inputSize);
         panel.add(this.inputNeededToWin);
         panel.add(this.addBtn);
-
+        panel.add(this.removeBtn);
         return panel;
     }
 
@@ -54,6 +70,7 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener {
             JButton srcBtn = (JButton) src;
             srcBtn.setEnabled(false);
             if (srcBtn == this.addBtn) {
+                this.isNotField = false;
                 this.neededNumberToWin = Integer.parseInt(this.inputNeededToWin.getText());
                 this.size = Integer.parseInt(this.inputSize.getText());
                 //System.out.println(this.size);
@@ -87,6 +104,7 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener {
                 }
 
                 this.hauptPanel.setLayout(new GridLayout(this.size, this.size));
+
 
                 field = new JButton[this.size][this.size];
                 isPlayed = new boolean[this.size][this.size];
@@ -129,13 +147,34 @@ public class Game_TicTacToe_Exam extends JFrame implements ActionListener {
                         });
                     }
                 }
+            } else if(srcBtn == this.removeBtn) {
+                if(!this.isNotField){
+                    new Game_TicTacToe_Exam();
+                    dispose();
+                    this.isNotField = true;
+                }
             }
-            /*
             this.hauptPanel.revalidate();
             this.hauptPanel.repaint();
-            */
         }
     }
+
+    @Override
+    public void focusGained(FocusEvent focusEvent) {
+        Object src = focusEvent.getSource();
+
+        if (src instanceof JTextField) {
+            JTextField srcBtn = (JTextField) src;
+
+            if (srcBtn == this.inputSize) {
+                this.inputSize.selectAll();
+            }
+            else  this.inputNeededToWin.selectAll();
+        }
+    }
+
+    @Override
+    public void focusLost(FocusEvent focusEvent) {}
 
     private boolean checkWin(int row, int col) {
         this.neededNumberToWin = Integer.parseInt(this.inputNeededToWin.getText());
